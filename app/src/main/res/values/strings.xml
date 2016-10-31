@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name" translatable="true">Stock Hawk</string>
+    <string name="action_example" translatable="true">Example action</string>
+    <string name="action_settings" translatable="true">Settings</string>
+    <string name="action_change_units" translatable="true">Change Units</string>
+    <string name="symbol_search" translatable="true">Symbol Search</string>
+    <string name="content_test" translatable="true">Search for a Stock Symbol</string>
+    <string name="input_hint" translatable="true">FB</string>
+    <string name="input_prefill" translatable="false"></string>
+    <string name="network_toast" translatable="true">Uh-oh! This app requires an internet connection</string>
+    <string name="add_action_description" translatable="true">Add new Stock</string>
+    <string name="stock_exist" translatable="true">This stock is already saved!</string>
+    <string name="stock_name_space" translatable="true">This stock name should not contain space</string>
+    <string name="empty_data" translatable="true">Data not available</string>
+    <string name="title_widget_stock" translatable="true">Stock Hawk</string>
+    <string name="percentage_change" translatable="true">% Change</string>
+    <string name="change" translatable="true">Change</string>
+    <string name="bid_price" translatable="true">Bid Price</string>
+    <string name="is_stock_up" translatable="true">Stock is up by </string>
+    <string name="is_stock_down" translatable="true">Stock is down by </string>
+    <string name="stock_status" translatable="false">StockStatus</string>
+    <string name="server_error" translatable="true">Server Error</string>
+    <string name="json_error" translatable="true">Json Parsing Error</string>
+    <string name="unknown_error" translatable="true">Unknown Error</string>
+    <string name="server_down_error" translatable="true">Server Down Error</string>
+    <string name="no_network_error" translatable="true">No Network</string>
+    <string name="status_ok" translatable="false"></string>
+    <string name="listview_widget" translatable="true">Widget listview</string>
+    <string name="delete_stock" translatable="true">Delete Stock</string>
+    <string name="delete_stock_content" translatable="true">Are you sure you want to delete stock?</string>
+    <string name="refresh_stock">Refresh Stock</string>
+</resources>
