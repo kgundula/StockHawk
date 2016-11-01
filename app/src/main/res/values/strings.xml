@@ -28,5 +28,8 @@
     <string name="listview_widget" translatable="true">Widget listview</string>
     <string name="delete_stock" translatable="true">Delete Stock</string>
     <string name="delete_stock_content" translatable="true">Are you sure you want to delete stock?</string>
-    <string name="refresh_stock">Refresh Stock</string>
+    <string name="refresh_stock" translatable="true">Refresh Stock</string>
+    <string name="stock_error_comma" translatable="true">Stock name should not contain commma</string>
+    <string name="stock_not_found" translatable="true">Stock does not exists</string>
+    <string name="stock_details_history">Stock Detail History</string>
 </resources>

@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -171,7 +172,11 @@ public class StockDetailsActivity extends AppCompatActivity {
 
                     LineDataSet dataSet = new LineDataSet(entries, "Stock Price ($)");
                     LineData lineData = new LineData(dataSet);
+                    Description description = new Description();
+                    String desc = symbol+"\'s "+getResources().getString(R.string.stock_details_history);
+                    description.setText(desc);
                     lineChart.setContentDescription(symbol);
+                    lineChart.setDescription(description);
                     lineChart.setData(lineData);
                     lineChart.setVisibility(View.VISIBLE);
                     lineChart.invalidate();

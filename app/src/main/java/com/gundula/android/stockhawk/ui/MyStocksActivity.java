@@ -46,8 +46,6 @@ import com.gundula.android.stockhawk.widget.StockHawkWidgetService;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static com.gundula.android.stockhawk.rest.Utils.checkSpaceOnStock;
-
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
@@ -148,25 +146,37 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                 public void onInput(MaterialDialog dialog, CharSequence input) {
                                     // On FAB click, receive user input. Make sure the stock doesn't already exist
                                     // in the DB and proceed accordingly
+                                    String stock_name = Utils.stockAllCaps(input.toString().trim());
+
+                                    //Only allow a single stock quote to be added at a time.
+                                    if (Utils.isStockCommaSeparated(stock_name))
+                                    {
+                                        displayToast(getResources().getString(R.string.stock_error_comma));
+                                        return;
+                                    }
+
                                     Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                                             new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
-                                            new String[]{input.toString()}, null);
+                                            new String[]{stock_name}, null);
 
-
+                                    assert c != null;
                                     if (c.getCount() != 0) {
                                         displayToast(getResources().getString(R.string.stock_exist));
                                         return;
                                     } else {
-                                        boolean contains_space = checkSpaceOnStock(input.toString());
+                                        boolean contains_space = Utils.checkSpaceOnStock(stock_name);
+                                        // Stock quote should not contain spaces
                                         if (contains_space) {
                                             displayToast(getResources().getString(R.string.stock_name_space));
                                         } else {
                                             // Add the stock to DB
                                             mServiceIntent.putExtra("tag", "add");
-                                            mServiceIntent.putExtra("symbol", input.toString());
+                                            mServiceIntent.putExtra("symbol", stock_name);
                                             startService(mServiceIntent);
                                         }
                                     }
+
+                                    c.close();
                                 }
                             })
                             .show();
@@ -276,6 +286,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursorAdapter.swapCursor(data);
         mCursor = data;
+        //Log.i("Ygritte", "Cursor : "+DatabaseUtils.dumpCursorToString(mCursor));
 
         emptyView();
 

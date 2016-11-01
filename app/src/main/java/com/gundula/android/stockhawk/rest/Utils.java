@@ -36,7 +36,7 @@ public class Utils {
             if (count == 1) {
                 jsonObject = jsonObject.getJSONObject("results")
                         .getJSONObject("quote");
-                batchOperations.add(buildBatchOperation(jsonObject));
+                    batchOperations.add(buildBatchOperation(jsonObject));
             } else {
                 resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
 
@@ -51,6 +51,17 @@ public class Utils {
         return batchOperations;
     }
 
+    public static String stockAllCaps(String stockName) {
+
+        String[] arr = stockName.split(" ");
+        StringBuffer sb = new StringBuffer();
+
+        for (int i = 0; i < arr.length; i++) {
+            sb.append(arr[i].toUpperCase()).append(" ");
+        }
+        return sb.toString().trim();
+    }
+
     public static String truncateBidPrice(String bidPrice) {
         try {
             bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
@@ -61,7 +72,6 @@ public class Utils {
     }
 
     public static boolean checkSpaceOnStock(String stockName) {
-
         Pattern pattern = Pattern.compile("\\s");
         Matcher matcher = pattern.matcher(stockName);
         boolean found = matcher.find();
@@ -90,6 +100,14 @@ public class Utils {
         return change;
     }
 
+    public static boolean isStockCommaSeparated(String stockName) {
+        boolean stock_has_comma = false;
+        if (stockName.contains(",")) {
+            stock_has_comma = true;
+        }
+        return stock_has_comma;
+    }
+
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
@@ -106,7 +124,6 @@ public class Utils {
             } else {
                 builder.withValue(QuoteColumns.ISUP, 1);
             }
-
             return builder.build();
 
         } catch (JSONException e) {

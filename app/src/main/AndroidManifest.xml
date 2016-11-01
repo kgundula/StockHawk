@@ -70,7 +70,11 @@
         </receiver>
         <service android:name=".widget.StockHawkWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
-
+        <receiver android:name=".service.StockNotFoundBroadcast">
+            <intent-filter>
+                <action android:name="com.gundula.android.stockhawk.ui.MyStocksActivity.STOCK_DOES_NOT_EXIST"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

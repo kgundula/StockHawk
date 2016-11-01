@@ -2,6 +2,7 @@ package com.gundula.android.stockhawk.service;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -23,6 +24,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -43,6 +45,9 @@ public class StockTaskService extends GcmTaskService {
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
+    private boolean is_stock_exists;
+
+    private static final String stock_not_found_intent_action = "com.gundula.android.stockhawk.ui.MyStocksActivity.STOCK_DOES_NOT_EXIST";
 
     public StockTaskService() {
     }
@@ -141,15 +146,38 @@ public class StockTaskService extends GcmTaskService {
                 getResponse = fetchData(urlString);
                 result = GcmNetworkManager.RESULT_SUCCESS;
                 try {
+                    JSONObject jsonObject = new JSONObject(getResponse);
+                    is_stock_exists = true;
+
+                    if (jsonObject.length() != 0) {
+                        jsonObject = jsonObject.getJSONObject("query");
+                        int count = Integer.parseInt(jsonObject.getString("count"));
+                        if (count == 1) {
+                            jsonObject = jsonObject.getJSONObject("results").getJSONObject("quote");
+                            String stock_company_name = jsonObject.getString("Name");
+                            // Yahoo stocks api returns Quote Name as null string if stock doesn't exists
+                            if (stock_company_name.equals("null")) {
+                                Intent intent = new Intent();
+                                intent.setAction(stock_not_found_intent_action);
+                                mContext.sendBroadcast(intent);
+                                is_stock_exists = false;
+                            }
+                        }
+                    }
+
                     ContentValues contentValues = new ContentValues();
                     // update ISCURRENT to 0 (false) so new data is current
-                    if (isUpdate) {
-                        contentValues.put(QuoteColumns.ISCURRENT, 0);
-                        mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
-                                null, null);
+                    if (is_stock_exists) { // Only add stock if it exists
+                        if (isUpdate) {
+                            contentValues.put(QuoteColumns.ISCURRENT, 0);
+                            mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
+                                    null, null);
+                        }
+                        mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                                Utils.quoteJsonToContentVals(getResponse));
+
                     }
-                    mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                            Utils.quoteJsonToContentVals(getResponse));
+
                 } catch (RemoteException | OperationApplicationException e) {
                     Log.e(LOG_TAG, "Error applying batch insert", e);
                     prefErrorMessage(mContext, STATUS_SERVER_ERROR);
